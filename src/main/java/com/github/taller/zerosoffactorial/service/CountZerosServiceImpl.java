@@ -9,6 +9,16 @@ public class CountZerosServiceImpl implements CountZerosService {
 
     @Override
     public Result countZerosOfFactorialFrom(int num) {
+        if (num < 0) {
+            throw new IllegalArgumentException("num should be greater than 0.");
+        }
+
+        Result result = calculateZeros(num);
+
+        return result;
+    }
+
+    private Result calculateZeros(int num) {
         int result = 0;
 
         while (num > 0) {

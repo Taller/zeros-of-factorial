@@ -1,30 +1,38 @@
+import com.github.spotbugs.SpotBugsTask
+
 buildscript {
 	ext {
 		springBootVersion = '2.0.4.RELEASE'
+		swaggerHubVersion = '1.0.1'
+        spotbugsPluginVersion = '1.6.2'
 	}
 	repositories {
 		jcenter()
 		mavenCentral()
 		maven {
-			url "https://plugins.gradle.org/m2/"
+			url 'https://plugins.gradle.org/m2/'
 		}
 		mavenLocal()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath("gradle.plugin.io.swagger:swaggerhub:1.0.1")
+		classpath("gradle.plugin.io.swagger:swaggerhub:${swaggerHubVersion}")
+        classpath("gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:${spotbugsPluginVersion}")
 	}
 }
 
 apply plugin: 'java'
-//apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: "io.swagger.swaggerhub"
+apply plugin: 'io.swagger.swaggerhub'
+apply plugin: 'application'
+apply plugin: 'com.github.spotbugs'
+
 
 group = 'com.github.taller'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
+mainClassName = 'com.github.taller.zerosoffactorial.ZerosOfFactorialApplication'
 
 repositories {
 	jcenter()
@@ -37,12 +45,29 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	runtime('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-//	compile ('io.springfox:springfox-swagger2')
 	compile('io.springfox:springfox-swagger2:2.9.2')
 	compile('io.springfox:springfox-swagger-ui:2.9.2')
 	compile('io.springfox.ui:springfox-swagger-ui-rfc6570:1.0.0')
 
     compile('io.springfox:springfox-spring-web:2.9.2')
 
-//	testCompile libs.test
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.3.sb'
 }
+
+spotbugs {
+    toolVersion = '3.1.6'
+
+    ignoreFailures = true
+    effort = "max"
+    reportLevel = "high"
+    reportsDir = file("$project.buildDir/reports/spotbug")
+}
+
+tasks.withType(SpotBugsTask) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+

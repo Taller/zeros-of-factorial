@@ -23,11 +23,11 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
     public ResponseEntity<Map<String, String>> handleMethodArgumentTypeMismatchException(Exception ex) {
 
         Map<String, String> result = new HashMap<>();
-        result.put("ERROR", "Incorrect input value. The largest num value is " + Integer.MAX_VALUE);
+        result.put("ERROR", "Incorrect input value. The correct value between 0 and " + Integer.MAX_VALUE);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
